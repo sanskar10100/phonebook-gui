@@ -72,20 +72,38 @@ class UserManagement:
 
 	def _input_credentials(self):
 		"""Inputs and sets user credentials."""
+
+		# lable and entry for username
+		lbl_username = helper.create_label(self.frame, text = 'Userame:').grid(row = 0, column = 0, sticky = 'w')
+		ent_username = Entry(self.frame, bd = 7).grid(row = 0, column = 1, sticky = 'w')
+
+		# lable and entry for password
+		lbl_password = helper.create_label(self.frame, text = 'Password:').grid(row = 1, column = 0, sticky = 'w')
+		ent_password = Entry(self.frame, bd = 7).grid(row = 1, column = 1, sticky = 'w')
+		
+		# TOD0
+
 		def submit():
-			# TODO
+			self.username = ent_username.get()
+			self.password = ent_password.get()
 			self.clicked.set(1)
+
 		self._gen_new_frame()
 
 		# TODO:
 		# Two labels, username and password. 2 entry widgets.
 		# One submit button.
 		# set self.username and self.password
-		btn_submit = # TODO
+		btn_submit = helper.button(self.frame, text = 'Login', bg = 'light blue', relief = GROOVE).grid(row = 4, column = 1, sticky = 'w')
 		btn_submit.wait_variable(self.clicked) # should be the last line of the function
 
 	def remove_user(self):
 		# TODO: You know what to do. Display a messgaebox showing status.
 
 	def select_user(self):
-		# TODO: You know what to do. Display a messagebox showing status.
+		
+		if _input_credentials():
+			tk.messagebox.showinfo(title = 'Phonebook', message = 'successfully login..')
+		else:
+			tk.messagebox.showerror(title = 'Login Error', message = 'Something wrong\nUsername or Password')
+
