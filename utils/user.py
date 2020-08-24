@@ -126,7 +126,7 @@ class UserManagement:
 
 		# lable and entry for password
 		lbl_password = helper.create_label(self.frame, text = 'Password:').grid(row = 1, column = 0, sticky = 'w')
-		ent_password = Entry(self.frame, bd = 7).grid(row = 1, column = 1, sticky = 'w')
+		ent_password = Entry(self.frame, bd = 7, show = '*').grid(row = 1, column = 1, sticky = 'w')
 		
 		# TOD0
 
