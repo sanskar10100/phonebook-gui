@@ -45,9 +45,11 @@ class UserManagement:
 	def _create_input_credentials(self):
 		"""Inputs First Time User's credentials and sets username and password."""
 		def submit():
-			self.username = # Assign hashed username here
-			self.password = # Assign hashed password here
-			self.clicked.set(1)
+			if u_pass == c_pass
+				credentials = helper._encryption([u_name, u_pass])
+				self.username =  credentials[0]# Assign hashed username here
+				self.password = credentials[1]# Assign hashed password here
+				self.clicked.set(1)
 
 		#TODO: 
 		# 3 text lables, username, password and confirm password.
@@ -58,7 +60,28 @@ class UserManagement:
 		# If password criteria doesn't match, display a messagebox saying so
 		# and clear the entry fields.
 		self._gen_new_frame()
-		btn_submit = # TODO: Generate submit button. Call submit if clicked.
+		# variable to store the value of the entry boxes.
+		u_name = str(tk.StringVar())
+		u_pass = str(tk.StringVar())
+		c_pass = str(tk.StringVar())
+		# labels of username and password and confirm password.
+		lbl_username = helper.create_label(self.frame, 'Username')
+		lbl_username.grid(row=0, column=0, sticky='w')
+		lbl_Password = helper.create_label(self.frame, 'Password')
+		lbl_Password.grid(row=0, column=0, sticky='w')
+		lbl_confirm_password = helper.create_label(self.frame, 'Confirm Password')
+		lbl_confirm_password.grid(row=0, column=0, sticky='w')
+		# creating entry boxes for above labels.
+		entry_username = helper.create_entry(self.frame, width=16, textvariable=u_name)
+		entry_username.grid(row=0, column=1, sticky='w')
+		entry_password = helper.create_entry(self.frame, width = 16, textvariable=u_pass)
+		entry_password.grid(row=1, column=1, sticky='w')
+		entry_confirm_password = helper.create_entry(self.frame, width = 16, textvariable=c_pass)
+		entry_confirm_password.grid(row=2, column=1, sticky='w')
+		# TODO: Generate submit button. Call submit if clicked.
+		# Creating submit button to add the user
+		btn_submit = tk.Button(master=self.frame, text='Submit', fg='#FFFFFF', bg='#009688', command=submit)
+		btn_add_user.grid(row=3, column=1, sticky='w')
 		# Wait until submit button is clicked
 		btn_submit.wait_variable(self.clicked) # should be the last line of the function
 
