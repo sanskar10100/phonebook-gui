@@ -1,5 +1,6 @@
 import tkinter as tk
 from . import helper
+from tkinter import messagebox
 
 ### Important
 ### Important
@@ -88,6 +89,25 @@ class UserManagement:
 	def add_user(self):
 		self._gen_new_frame()
 		# TODO:
+		if  _create_input_credentials():
+			c.execute("""CREATE TABLE IF NOT EXISTS users( 
+			username VARCHAR(40) NOT NULL,
+			password VARCHAR(40) NOT NULL);
+			""")
+			c.execute("INSERT INTO users VALUES (?,?);", (self.username, self.password, ))
+			conn.commit()
+
+			tablename = helper.scrub('contacts_' + self.username)
+			c.execute(f"""CREATE TABLE {tablename} (
+			name VARCHAR(255) NOT NULL,
+			phno VARCHAR(20) NOT NULL,
+			email VARCHAR(255) NOT NULL);
+			""")
+			conn.commit()
+			tk.messagebox.showinfo(title='Phonebook', message='User Added in the Phonebook')
+
+		else:
+			tk.messagebox.showwarning(title='Invalid Credentials', message='Credentials do no match the requirements.')
 		# Call create_input_credentials. If everything goes smoothly, show a messagebox saying user successfully added.
 		# Create a table if not exists in database, called users with the following fields:
 		# username varchar(40) NOT NULL, password VARCHAR(40) NOT NULL
