@@ -1,6 +1,7 @@
 import tkinter as tk
 from . import helper
 from tkinter import messagebox
+import sqlite3
 
 ### Important
 ### Important
@@ -10,6 +11,9 @@ from tkinter import messagebox
 ### Important
 ### Important
 ### Important
+
+conn = sqlite3.connect('material.db')
+c = conn.curson()
 
 class UserManagement:
 	"""Provides UserManagement functionality: add, remove and select user.
