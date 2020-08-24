@@ -107,7 +107,7 @@ class UserManagement:
 			tk.messagebox.showinfo(title='Phonebook', message='User Added in the Phonebook')
 
 		else:
-			tk.messagebox.showwarning(title='Invalid Credentials', message='Credentials do no match the requirements.')
+			tk.messagebox.showerror(title='Invalid Credentials', message='Credentials do no match the requirements.')
 		# Call create_input_credentials. If everything goes smoothly, show a messagebox saying user successfully added.
 		# Create a table if not exists in database, called users with the following fields:
 		# username varchar(40) NOT NULL, password VARCHAR(40) NOT NULL
