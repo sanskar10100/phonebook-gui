@@ -5,7 +5,6 @@ Provides a lot of management options for contacts.
 Uses sqlite3 database for persistance.
 """
 import tkinter as tk
-import sqlite3
 from utils import user
 
 if __name__ == '__main__':
@@ -13,7 +12,6 @@ if __name__ == '__main__':
 	window = tk.Tk()
 	window.title('Phonebook')
 	window.geometry('400x400')
-	window.configure(bg='#455A64')
 
 	user.UserManagement(window)
 
