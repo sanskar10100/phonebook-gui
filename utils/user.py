@@ -54,14 +54,29 @@ class UserManagement:
 		btn_select_user = helper.create_button(self.frame, 'Select User', self.select_user)
 		btn_select_user.grid(sticky='w')
 
+	def _user_exists(self, username):
+		"""Returns false if a username already exists in the database."""
+		encrypted_username = helper.encrypt_credentials(username, 'dummy')[0]
+		try:
+			if c.execute('SELECT * FROM users WHERE username = ?', (encrypted_username, )).fetchone() is None:
+				return False
+			else:
+				return True
+		except sqlite3.OperationalError:
+			return False
+	
 	def _create_input_credentials(self):
 		"""Inputs First Time User's credentials and sets username and password."""
 		def submit():
+			"""Triggered on submit button click. Matches both password and if true, then sets class variables."""
 			username = entry_username.get()
 			password = entry_password.get()
 			confirm_password = entry_confirm_password.get()
 			if password != confirm_password:
 				tk.messagebox.showerror(title='Password Mismatch', message='Both input passwords are not same!')
+				self.status = False
+			elif self._user_exists(username):
+				tk.messagebox.showerror(title='Duplicate User', message='Username already exists!')
 				self.status = False
 			else:
 				self.username = username
@@ -110,8 +125,8 @@ class UserManagement:
 
 			# Create users table (if program is being run for the first time)
 			c.execute("""CREATE TABLE IF NOT EXISTS users( 
-							username VARCHAR(40) NOT NULL,
-							password VARCHAR(40) NOT NULL);""")
+							username VARCHAR(64) NOT NULL,
+							password VARCHAR(64) NOT NULL);""")
 			# Insert encrypted user data into users table
 			c.execute("INSERT INTO users VALUES (?, ?);", encrypted_credentials)
 			conn.commit()
