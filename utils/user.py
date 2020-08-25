@@ -13,12 +13,18 @@ import sqlite3
 ### Important
 
 conn = sqlite3.connect('material.db')
-c = conn.curson()
+c = conn.cursor()
 
 class UserManagement:
 	"""Provides UserManagement functionality: add, remove and select user.
 
 	Attributes:-
+	frame: Currently active background frame.
+	window: Currently active main program window. Parent of frame
+	username: username in plaintext
+	password: password in plaintext
+	clicked: indicates status of submit buttons. Uses for local looping
+	status: status flag, shows status of the most recently called method
 	"""
 
 	def __init__(self, window):
@@ -28,6 +34,7 @@ class UserManagement:
 		self.password = None
 		self.clicked = tk.IntVar()
 		self.clicked.set(0)
+		self.status = False
 		self.draw_user_menu()
 
 	def _gen_new_frame(self):
@@ -43,92 +50,75 @@ class UserManagement:
 		btn_add_user = helper.create_button(self.frame, 'Add User', self.add_user)
 		btn_add_user.grid(sticky='w')
 		btn_remove_user = helper.create_button(self.frame, 'Remove User', self.remove_user)
-		btn_add_user.grid(sticky='w')
+		btn_remove_user.grid(sticky='w')
 		btn_select_user = helper.create_button(self.frame, 'Select User', self.select_user)
 		btn_select_user.grid(sticky='w')
 
 	def _create_input_credentials(self):
 		"""Inputs First Time User's credentials and sets username and password."""
 		def submit():
-			if u_pass == c_pass
-				credentials = helper._encryption([u_name, u_pass])
-				self.username =  credentials[0]# Assign hashed username here
-				self.password = credentials[1]# Assign hashed password here
-				self.clicked.set(1)
+			username = entry_username.get()
+			password = entry_password.get()
+			confirm_password = entry_confirm_password.get()
+			if password != confirm_password:
+				tk.messagebox.showerror(title='Password Mismatch', message='Both input passwords are not same!')
+				self.status = False
+			else:
+				self.username = username
+				self.password = password
+				self.status = True
+			self.clicked.set(1)
 
-		#TODO: 
-		# 3 text lables, username, password and confirm password.
-		# 3 Entry widgets. 
-		# One submit button. Data from entry widget should be checked for criteria matching
-		# then hashed and then stored.
-		# Program should wait until submit button is clicked before returning.
-		# If password criteria doesn't match, display a messagebox saying so
-		# and clear the entry fields.
 		self._gen_new_frame()
-		# variable to store the value of the entry boxes.
-		u_name = str(tk.StringVar())
-		u_pass = str(tk.StringVar())
-		c_pass = str(tk.StringVar())
+
 		# labels of username and password and confirm password.
 		lbl_username = helper.create_label(self.frame, 'Username')
 		lbl_username.grid(row=0, column=0, sticky='w')
 		lbl_Password = helper.create_label(self.frame, 'Password')
-		lbl_Password.grid(row=0, column=0, sticky='w')
+		lbl_Password.grid(row=1, column=0, sticky='w')
 		lbl_confirm_password = helper.create_label(self.frame, 'Confirm Password')
-		lbl_confirm_password.grid(row=0, column=0, sticky='w')
+		lbl_confirm_password.grid(row=2, column=0, sticky='w')
+
 		# creating entry boxes for above labels.
-		entry_username = helper.create_entry(self.frame, width=16, textvariable=u_name)
+		entry_username = tk.Entry(master=self.frame, width=16)
 		entry_username.grid(row=0, column=1, sticky='w')
-		entry_password = helper.create_entry(self.frame, width = 16, textvariable=u_pass)
+		entry_password = tk.Entry(master=self.frame, width = 16, show='*')
 		entry_password.grid(row=1, column=1, sticky='w')
-		entry_confirm_password = helper.create_entry(self.frame, width = 16, textvariable=c_pass)
+		entry_confirm_password = tk.Entry(master=self.frame, width = 16, show='*')
 		entry_confirm_password.grid(row=2, column=1, sticky='w')
-		# TODO: Generate submit button. Call submit if clicked.
+
 		# Creating submit button to add the user
-		btn_submit = tk.Button(master=self.frame, text='Submit', fg='#FFFFFF', bg='#009688', command=submit)
-		btn_add_user.grid(row=3, column=1, sticky='w')
+		btn_submit = helper.create_button(self.frame, 'Submit', submit)
+		btn_submit.grid(row=3, column=1, sticky='w')
 		# Wait until submit button is clicked
-		btn_submit.wait_variable(self.clicked) # should be the last line of the function
+		btn_submit.wait_variable(self.clicked)
 
 	def add_user(self):
 		self._gen_new_frame()
-		# TODO:
-		if  _create_input_credentials():
-			c.execute("""CREATE TABLE IF NOT EXISTS users( 
-			username VARCHAR(40) NOT NULL,
-			password VARCHAR(40) NOT NULL);
-			""")
-			c.execute("INSERT INTO users VALUES (?,?);", (self.username, self.password, ))
-			conn.commit()
-
-			tablename = helper.scrub('contacts_' + self.username)
+		self._create_input_credentials()
+	
+		if self.status is True:		
+			tablename = helper.scrub('contacts_' + self.username.lower())
+			# Create contacts table for the user
 			c.execute(f"""CREATE TABLE {tablename} (
-			name VARCHAR(255) NOT NULL,
-			phno VARCHAR(20) NOT NULL,
-			email VARCHAR(255) NOT NULL);
-			""")
-			conn.commit()
-			tk.messagebox.showinfo(title='Phonebook', message='User Added in the Phonebook')
+							name VARCHAR(255) NOT NULL,
+							number VARCHAR(20) NOT NULL,
+							email VARCHAR(255) NOT NULL);""")
 
-		else:
-			tk.messagebox.showerror(title='Invalid Credentials', message='Credentials do no match the requirements.')
-		# Call create_input_credentials. If everything goes smoothly, show a messagebox saying user successfully added.
-		# Create a table if not exists in database, called users with the following fields:
-		# username varchar(40) NOT NULL, password VARCHAR(40) NOT NULL
-		# Add username and password to the table.
+			# Encrypt username and password for storage
+			encrypted_credentials = helper.encrypt_credentials(self.username, self.password)
+
+			# Create users table (if program is being run for the first time)
+			c.execute("""CREATE TABLE IF NOT EXISTS users( 
+							username VARCHAR(40) NOT NULL,
+							password VARCHAR(40) NOT NULL);""")
+			# Insert encrypted user data into users table
+			c.execute("INSERT INTO users VALUES (?, ?);", encrypted_credentials)
+			conn.commit()
+		self.draw_user_menu()
 
 	def _input_credentials(self):
 		"""Inputs and sets user credentials."""
-
-		# lable and entry for username
-		lbl_username = helper.create_label(self.frame, text = 'Userame:').grid(row = 0, column = 0, sticky = 'w')
-		ent_username = Entry(self.frame, bd = 7).grid(row = 0, column = 1, sticky = 'w')
-
-		# lable and entry for password
-		lbl_password = helper.create_label(self.frame, text = 'Password:').grid(row = 1, column = 0, sticky = 'w')
-		ent_password = Entry(self.frame, bd = 7, show = '*').grid(row = 1, column = 1, sticky = 'w')
-		
-		# TOD0
 
 		def submit():
 			self.username = ent_username.get()
@@ -136,21 +126,22 @@ class UserManagement:
 			self.clicked.set(1)
 
 		self._gen_new_frame()
-
-		# TODO:
-		# Two labels, username and password. 2 entry widgets.
-		# One submit button.
-		# set self.username and self.password
-		btn_submit = helper.button(self.frame, text = 'Login', bg = 'light blue', relief = GROOVE).grid(row = 4, column = 1, sticky = 'w')
+		# lable and entry for username
+		lbl_username = helper.create_label(self.frame, 'Username:').grid(row=0, column=0, sticky='w')
+		ent_username = tk.Entry(self.frame, bd=7)
+		ent_username.grid(row=0, column=1, sticky='w')
+		# lable and entry for password
+		lbl_password = helper.create_label(self.frame, 'Password:').grid(row=1, column=0, sticky='w')
+		ent_password = tk.Entry(self.frame, bd=7, show='*')
+		ent_password.grid(row=1, column=1, sticky='w')
+		# Submit button, when clicked registers input		
+		btn_submit = helper.create_button(self.frame, 'Login', submit)
+		btn_submit.grid(row = 4, column = 1, sticky = 'w')
 		btn_submit.wait_variable(self.clicked) # should be the last line of the function
 
 	def remove_user(self):
-		# TODO: You know what to do. Display a messgaebox showing status.
+		pass
 
 	def select_user(self):
-		
-		if _input_credentials():
-			tk.messagebox.showinfo(title = 'Phonebook', message = 'successfully login..')
-		else:
-			tk.messagebox.showerror(title = 'Login Error', message = 'Something wrong\nUsername or Password')
+		self._input_credentials()
 
