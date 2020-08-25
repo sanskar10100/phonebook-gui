@@ -14,6 +14,10 @@ def create_label(frame, label_text):
 def encrypt_credentials(username, password):
 	"""Return the login credential in sha256 encrypted format."""
 	encrypt_login_details = list()
-	for credential in login_details:
-		encrypt_login_details.append(hashlib.sha256(credential.encode()).hexdigest())
+	encrypt_login_details.append(hashlib.sha256(username.encode()).hexdigest())
+	encrypt_login_details.append(hashlib.sha256(password.encode()).hexdigest())
 	return tuple(encrypt_login_details)
+
+def scrub(table_name):
+	"""Sanitizes input for database query"""
+	return ''.join( chr for chr in table_name if chr.isalnum() or chr == '_' )
