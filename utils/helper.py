@@ -3,6 +3,15 @@
 import tkinter as tk
 import hashlib
 
+credential_criteria = '''Username must be at least 4 characters long. May contain alphabets or numbers
+
+Password Specifications:
+At least 8 characters
+At least one lowercase alphabet [a-z]
+At least one uppercase alphabet [A-Z]
+At least one digit [0-9]
+At least one special character [@, #, $, &, +, -, *, ?, ., :, /, ;]'''
+
 def create_button(frame, button_text, function_to_call):
 	"""Returns a new button created according to the style guidelines."""
 	return tk.Button(master=frame, text=button_text, fg='#FFFFFF', bg='#009688', command=function_to_call)

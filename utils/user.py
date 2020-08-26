@@ -3,15 +3,6 @@ from . import helper
 from tkinter import messagebox
 import sqlite3
 
-### Important
-### Important
-### Important
-### See helper's create_button and create_label functions. Use them.
-### Write all the extra functions in helper module too.
-### Important
-### Important
-### Important
-
 conn = sqlite3.connect('material.db')
 c = conn.cursor()
 
@@ -85,7 +76,7 @@ class UserManagement:
 			self.clicked.set(1)
 
 		self._gen_new_frame()
-
+		tk.messagebox.showinfo(title='Credential Criteria', message=helper.credential_criteria)
 		# labels of username and password and confirm password.
 		lbl_username = helper.create_label(self.frame, 'Username')
 		lbl_username.grid(row=0, column=0, sticky='w')
@@ -158,5 +149,5 @@ class UserManagement:
 		pass
 
 	def select_user(self):
-		self._input_credentials()
+		pass
 
