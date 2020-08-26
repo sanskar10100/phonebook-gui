@@ -69,6 +69,9 @@ class UserManagement:
 			elif self._user_exists(username):
 				tk.messagebox.showerror(title='Duplicate User', message='Username already exists!')
 				self.status = False
+			elif helper.verify_credential_criteria(username, password) is False:
+				tk.messagebox.showerror(title='Criteria Match Failed', message='Either username or password do not satisfy the credential criteria')
+				self.status = False
 			else:
 				self.username = username
 				self.password = password
