@@ -54,6 +54,7 @@ class UserManagement:
 			else:
 				return True
 		except sqlite3.OperationalError:
+			# operational error occurs if users table doesn't exist (program being run for the first time)
 			return False
 	
 	def _create_input_credentials(self):
@@ -70,7 +71,8 @@ class UserManagement:
 				tk.messagebox.showerror(title='Duplicate User', message='Username already exists!')
 				self.status = False
 			elif helper.verify_credential_criteria(username, password) is False:
-				tk.messagebox.showerror(title='Criteria Match Failed', message='Either username or password do not satisfy the credential criteria')
+				tk.messagebox.showerror(title='Criteria Match Failed', message='Either username or password' +
+				 														'do not satisfy the credential criteria')
 				self.status = False
 			else:
 				self.username = username
