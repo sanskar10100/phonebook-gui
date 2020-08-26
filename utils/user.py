@@ -45,7 +45,17 @@ class UserManagement:
 		btn_select_user = helper.create_button(self.frame, 'Select User', self.select_user)
 		btn_select_user.grid(sticky='w')
 
-	def _user_exists(self, username):
+	def _user_authorisation(self):
+		"""Returns true if user credentials exist in the users table."""
+		encrypted_credentials = helper.encrypt_credentials(self.username, self.password)
+		query = c.execute('''SELECT * FROM users
+						WHERE username = ? AND password = ?''', encrypted_credentials) 
+		if query.fetchone() is None:
+			return False
+		else:
+			return True
+
+	def _username_exists(self, username):
 		"""Returns false if a username already exists in the database."""
 		encrypted_username = helper.encrypt_credentials(username, 'dummy')[0]
 		try:
@@ -61,13 +71,13 @@ class UserManagement:
 		"""Inputs First Time User's credentials and sets username and password."""
 		def submit():
 			"""Triggered on submit button click. Matches both password and if true, then sets class variables."""
-			username = entry_username.get()
+			username = entry_username.get().lower()
 			password = entry_password.get()
 			confirm_password = entry_confirm_password.get()
 			if password != confirm_password:
 				tk.messagebox.showerror(title='Password Mismatch', message='Both input passwords are not same!')
 				self.status = False
-			elif self._user_exists(username):
+			elif self._username_exists(username):
 				tk.messagebox.showerror(title='Duplicate User', message='Username already exists!')
 				self.status = False
 			elif helper.verify_credential_criteria(username, password) is False:
@@ -109,7 +119,7 @@ class UserManagement:
 		self._create_input_credentials()
 	
 		if self.status is True:		
-			tablename = helper.scrub('contacts_' + self.username.lower())
+			tablename = helper.scrub('contacts_' + self.username)
 			# Create contacts table for the user
 			c.execute(f"""CREATE TABLE {tablename} (
 							name VARCHAR(255) NOT NULL,
@@ -132,18 +142,18 @@ class UserManagement:
 		"""Inputs and sets user credentials."""
 
 		def submit():
-			self.username = ent_username.get()
+			self.username = ent_username.get().lower()
 			self.password = ent_password.get()
 			self.clicked.set(1)
 
 		self._gen_new_frame()
 		# lable and entry for username
 		lbl_username = helper.create_label(self.frame, 'Username:').grid(row=0, column=0, sticky='w')
-		ent_username = tk.Entry(self.frame, bd=7)
+		ent_username = tk.Entry(self.frame)
 		ent_username.grid(row=0, column=1, sticky='w')
 		# lable and entry for password
 		lbl_password = helper.create_label(self.frame, 'Password:').grid(row=1, column=0, sticky='w')
-		ent_password = tk.Entry(self.frame, bd=7, show='*')
+		ent_password = tk.Entry(self.frame, show='*')
 		ent_password.grid(row=1, column=1, sticky='w')
 		# Submit button, when clicked registers input		
 		btn_submit = helper.create_button(self.frame, 'Login', submit)
@@ -151,8 +161,24 @@ class UserManagement:
 		btn_submit.wait_variable(self.clicked) # should be the last line of the function
 
 	def remove_user(self):
-		pass
+		self._input_credentials()
+		if self._user_authorisation() is True:
+			encrypted_credentials = helper.encrypt_credentials(self.username, self.password)
+			c.execute('DELETE FROM users WHERE username = ? AND password = ?', encrypted_credentials)
+			tablename = helper.scrub('contacts_' + self.username)
+			c.execute(f'DROP TABLE {tablename}')
+			conn.commit()
+			tk.messagebox.showinfo(title='Deletion successful', message='User deleted successfully')
+		else:
+			tk.messagebox.showerror(title='Failed to delete user', messaege='The user does not exist!')
+		self.draw_user_menu()
 
 	def select_user(self):
-		pass
+		self._input_credentials()
+		if self._user_authorisation() is True:
+			pass
+			print('Alrighty mate')
+		else:
+			tk.messagebox.showerror(title='Failed to select user', message='The user does not exist!')
+			self.draw_user_menu()
 

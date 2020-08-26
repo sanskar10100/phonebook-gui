@@ -2,6 +2,7 @@
 
 import tkinter as tk
 import hashlib
+import re
 
 credential_criteria = '''Username must be at least 4 characters long. May contain alphabets or numbers
 
