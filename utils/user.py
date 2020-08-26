@@ -1,5 +1,13 @@
+"""Provides code for user management.
+
+Features functionality to add, select or remove user. Control moves to contacts module after successful
+user selection.
+Authored by Sanskar Agrawal, Anuj Kumar Singh and Saumy Pandey.
+"""
+
 import tkinter as tk
 from . import helper
+from . import contacts
 from tkinter import messagebox
 import sqlite3
 
@@ -88,6 +96,7 @@ class UserManagement:
 				self.username = username
 				self.password = password
 				self.status = True
+				tk.messagebox.showinfo(title='Addition successful', message='User added successfully')
 			self.clicked.set(1)
 
 		self._gen_new_frame()
@@ -115,6 +124,7 @@ class UserManagement:
 		btn_submit.wait_variable(self.clicked)
 
 	def add_user(self):
+		"""Adds a user to the database if all the criterias match successfully."""
 		self._gen_new_frame()
 		self._create_input_credentials()
 	
@@ -124,7 +134,7 @@ class UserManagement:
 			c.execute(f"""CREATE TABLE {tablename} (
 							name VARCHAR(255) NOT NULL,
 							number VARCHAR(20) NOT NULL,
-							email VARCHAR(255) NOT NULL);""")
+							email VARCHAR(255));""")
 
 			# Encrypt username and password for storage
 			encrypted_credentials = helper.encrypt_credentials(self.username, self.password)
@@ -161,6 +171,7 @@ class UserManagement:
 		btn_submit.wait_variable(self.clicked) # should be the last line of the function
 
 	def remove_user(self):
+		"""Removes user upon successful database matching."""
 		self._input_credentials()
 		if self._user_authorisation() is True:
 			encrypted_credentials = helper.encrypt_credentials(self.username, self.password)
@@ -174,11 +185,11 @@ class UserManagement:
 		self.draw_user_menu()
 
 	def select_user(self):
+		"""Selects user upon database verification, and initiates the contact management system."""
 		self._input_credentials()
 		if self._user_authorisation() is True:
-			pass
-			print('Alrighty mate')
+			tablename = helper.scrub('contacts_' + self.username)
+			contact = contacts.ContactsManagement(self.window, self.frame, tablename)
 		else:
 			tk.messagebox.showerror(title='Failed to select user', message='The user does not exist!')
 			self.draw_user_menu()
-

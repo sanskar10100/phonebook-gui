@@ -14,9 +14,9 @@ At least one digit [0-9]
 At least one special character [@, #, $, &, +, -, *, ?, ., :, /, ;]'''
 
 
-def create_button(frame, button_text, function_to_call):
+def create_button(master=None, text=None, command=None):
 	"""Returns a new button created according to the style guidelines."""
-	return tk.Button(master=frame, text=button_text, fg='#FFFFFF', bg='#009688', command=function_to_call)
+	return tk.Button(master=master, text=text, fg='#FFFFFF', bg='#009688', command=command)
 
 
 def create_label(frame, label_text):
