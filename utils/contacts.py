@@ -71,11 +71,15 @@ class ContactsManagement:
 			name = entry_name.get()
 			number = entry_phno.get()
 			email = entry_email.get()
-			contact_tuple = (name, number, email)
-			tablename = helper.scrub('contacts_' + self.username)
-			c.execute(f'''INSERT INTO {tablename} 
-						VALUES (?, ?, ?);''', contact_tuple)
-			conn.commit()
+			if email == '':
+				email = 'NULL'
+			if (helper._verify_contact_name(name) is False) or (helper._verify_contact_num(number) is False):
+				pass
+			else :
+				contact_tuple = (name, number, email)
+				c.execute(f'''INSERT INTO {self.tablename} 
+							VALUES (?, ?, ?);''', contact_tuple)
+				conn.commit()
 			self.clicked.set(1)
 
 		self._gen_new_frame()
@@ -89,20 +93,23 @@ class ContactsManagement:
 		
 		# adding entry boxes for name, phno and email labels.
 
-		entry_name = tk.Entry(master=self.master, width=16)
+		entry_name = tk.Entry(master=self.frame, width=16)
 		entry_name.grid(row=0, column=1, sticky='w')
-		entry_phno = tk.Entry(master=self.master, width=16)
+		entry_phno = tk.Entry(master=self.frame, width=16)
 		entry_phno.grid(row=1, column=1, sticky='w')
-		entry_email = tk.Entry(master=self.master, width=16)
+		entry_email = tk.Entry(master=self.frame, width=16)
 		entry_email.grid(row=2, column=1, sticky='w')
 
 		# adding button to submit the all the user enter details into the contact_+username table.
-
 		btn_submit = helper.create_button(self.frame, 'Submit', submit)
 		btn_submit.grid(row=3, column=1, sticky='w')
+		# adding button to go back to the previous menu i.e, draw_contacts_menu.
+		btn_go_back = helper.create_button(self.frame, 'Go Back', command=lambda: self.clicked.set(1))
+		btn_go_back.grid(row=3, column=0, sticky='w')
 
 		# adding clicking mechanism
 		btn_submit.wait_variable(self.clicked)
+		self.draw_contacts_menu()
 
 	def remove_contact(self):
 		pass

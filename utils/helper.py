@@ -55,3 +55,16 @@ def verify_credential_criteria(username, password):
 		status = False
 
 	return status
+
+def _verify_contact_name(name):
+	"""Fails if contact name isn't valid."""
+	if re.fullmatch('[a-zA-Z ]*', name) is None:
+		print('Error: Invalid contact name')
+		return False
+
+
+def _verify_contact_num(num):
+	"""Fails if contact number isn't valid."""
+	if re.fullmatch('''[+]?\d{0,3}[ ]?\d{10}''', num) is None:
+			print('Error: Invalid contact number')
+			return False
