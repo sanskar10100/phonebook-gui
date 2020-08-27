@@ -192,4 +192,4 @@ class UserManagement:
 			contact = contacts.ContactsManagement(self.window, self.frame, tablename)
 		else:
 			tk.messagebox.showerror(title='Failed to select user', message='The user does not exist!')
-			self.draw_user_menu()
+		self.draw_user_menu()

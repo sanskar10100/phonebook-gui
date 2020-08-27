@@ -37,12 +37,21 @@ class ContactsManagement:
 
 	def draw_contacts_menu(self):
 		"""Draws buttons for calling different methods on screen."""
+		def return_to_user():
+			"""Returns control to user management module."""
+			self.frame.destroy()
+			self.clicked.set(1)
+
 		self._gen_new_frame()
+		self.clicked.set(0)
 		helper.create_button(self.frame, text='Show All Contacts', command=self.show_all_contacts).grid()
 		helper.create_button(self.frame, text='Add Contact', command=self.add_contact).grid()
 		helper.create_button(self.frame, text='Remove Contact', command=self.remove_contact).grid()
 		helper.create_button(self.frame, text='Modify Contact', command=self.modify_contact).grid()
 		helper.create_button(self.frame, text='Search Contact', command=self.search_contact).grid()
+		btn_user = helper.create_button(self.frame, text='Switch to User Management Menu', command=return_to_user)
+		btn_user.grid()
+		btn_user.wait_variable(self.clicked)
 
 	def show_all_contacts(self):
 		"""Shows all contacts for a user, along with the contact count."""
