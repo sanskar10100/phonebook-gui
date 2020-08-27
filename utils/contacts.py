@@ -67,20 +67,28 @@ class ContactsManagement:
 
 
 	def add_contact(self):
+		"""Adds a contact to the user's contacts table iff the input details are valid."""
 		def submit():
 			name = entry_name.get()
 			number = entry_phno.get()
 			email = entry_email.get()
-			if email == '':
-				email = 'NULL'
-			if (helper._verify_contact_name(name) is False) or (helper._verify_contact_num(number) is False):
-				tk.messagebox.showerror(title='Inappropriate Credential', message='Contact name and Contact Number must be valid!')
-			else :
-				contact_tuple = (name, number, email)
-				c.execute(f'''INSERT INTO {self.tablename} 
-							VALUES (?, ?, ?);''', contact_tuple)
-				conn.commit()
-				self.clicked.set(1)
+			if helper._verify_contact_name(name) is False:
+				tk.messagebox.showerror(title='Invalid Name', message='Please make sure that you have entered the correct name')
+			elif helper._verify_contact_num(number) is False:
+				tk.messagebox.showerror(title='Invalid Number', message='Please make sure that you have entered the correct number')
+			else:
+				if email == '':
+					tkinter.messagebox.showinfo(title='Addition Successful', message='Contact Successfully Added')
+					c.execute(f'INSERT INTO {self.tablename} VALUES (?, ?, ?)', (name, number, 'NULL', ))
+					conn.commit()
+				else:
+					if helper._verify_contact_email(email) is False:
+						tk.messagebox.showerror(title='Invalid Email', message='Please make sure that you have entered the correct email')				
+					else:
+						tkinter.messagebox.showinfo(title='Addition Successful', message='Contact Successfully Added')
+						c.execute(f'INSERT INTO {self.tablename} VALUES (?, ?, ?)', (name, number, email, ))
+						conn.commit()
+			self.clicked.set(1)
 
 		self._gen_new_frame()
 		# adding name, phno and email label.
@@ -92,7 +100,6 @@ class ContactsManagement:
 		lbl_email.grid(row=2, column=0, sticky='w')
 		
 		# adding entry boxes for name, phno and email labels.
-
 		entry_name = tk.Entry(master=self.frame, width=16)
 		entry_name.grid(row=0, column=1, sticky='w')
 		entry_phno = tk.Entry(master=self.frame, width=16)
@@ -112,6 +119,7 @@ class ContactsManagement:
 		self.draw_contacts_menu()
 
 	def remove_contact(self):
+		"""Removes all matches from the database, matching based on name (case insensitive)."""
 		def remove_contact():
 			name = entry_name.get()
 			if c.execute(f'''SELECT * FROM {self.tablename} WHERE LOWER(name) = ?''', (name.lower(), )).fetchone() is not None:
@@ -120,7 +128,8 @@ class ContactsManagement:
 				conn.commit()
 				self.clicked.set(1)
 			else:
-				tk.messagebox.showerror(title='Invalid Contact Name', message='Contact Name does not exist')
+				tk.messagebox.showerror(title='No matches found', message='Contact Name does not exist')
+				
 		self._gen_new_frame()
 		# taking name to remove the contact from the self.tablename table.
 		lbl_name = helper.create_label(self.frame, 'Contact Name')

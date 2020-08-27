@@ -36,6 +36,7 @@ def scrub(table_name):
 	"""Sanitizes input for database query"""
 	return ''.join( chr for chr in table_name if chr.isalnum() or chr == '_' )
 
+
 def verify_credential_criteria(username, password):
 	"""Returns true if both username and password match the credential criteria or requirements."""
 	if len(username) < 4 or not username.isalnum():
@@ -56,15 +57,20 @@ def verify_credential_criteria(username, password):
 
 	return status
 
+
 def _verify_contact_name(name):
 	"""Fails if contact name isn't valid."""
 	if re.fullmatch('[a-zA-Z ]*', name) is None:
-		print('Error: Invalid contact name')
 		return False
 
 
 def _verify_contact_num(num):
 	"""Fails if contact number isn't valid."""
 	if re.fullmatch('''[+]?\d{0,3}[ ]?\d{10}''', num) is None:
-			print('Error: Invalid contact number')
 			return False
+
+
+def _verify_contact_email(email):
+	"""Fails if contact email is not valid."""
+	if re.search('''^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$''', email) is None:
+		return False
