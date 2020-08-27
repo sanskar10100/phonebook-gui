@@ -76,4 +76,36 @@ class ContactsManagement:
 		pass
 
 	def search_contact(self):
-		pass
+		"""Matches contacts based on name (case insensitive) and prints all matching results."""
+		self._gen_new_frame()
+		self.clicked.set(0)
+		helper.create_label(self.frame, 'Name to be searched: ').grid(row=0, column=0)
+		ent_name_key = tk.Entry(master=self.frame)
+		ent_name_key.grid(row=0, column=1)
+		btn_submit = helper.create_button(self.frame, text='Submit', command=lambda: self.clicked.set(1))
+		btn_submit.grid(row=1, column=0)
+		# wait until the submit button is clicked to perform match
+		btn_submit.wait_variable(self.clicked)
+		name_key = ent_name_key.get().lower()
+
+		# If no matches are found, raise error and return
+		if c.execute(f'SELECT * FROM {self.tablename} WHERE LOWER(name) = ?', (name_key, )).fetchone() is None:
+			tk.messagebox.showerror(title='No matches found', message='No matching contacts were found')
+		else:
+			self._display_matched_contacts(name_key)
+		self.draw_contacts_menu()
+			
+
+	def _display_matched_contacts(self, name_key):
+		self._gen_new_frame()
+		self.clicked.set(0)
+		# Print details for every matching contact name
+		for name, number, email in c.execute(f'SELECT * FROM {self.tablename} WHERE LOWER(name) = ?', (name_key, )):
+			textbox = tk.Text(master=self.frame, bg='#455A64', fg='#FFFFFF', height=1)
+			textbox.insert(tk.END, f'{name} | {number} | {email}')
+			textbox.grid()
+		else:
+			# Go back when button pressed
+			btn_go_back = helper.create_button(self.frame, 'Go Back', command=lambda: self.clicked.set(1))
+			btn_go_back.grid(column=0, sticky='w')
+			btn_go_back.wait_variable(self.clicked)
