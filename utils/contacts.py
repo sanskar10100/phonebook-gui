@@ -18,6 +18,10 @@ class ContactsManagement:
 	"""Provides contact management methods, like addition, deletion, view, modify, search.
 
 	Attributes:-
+	tablename: sanitized name of the currently active table
+	window: parent or root phonebook window
+	frame: currently active frame or screen
+	clicked: indicates whether a buttton has been clicked. Useful for creating local loops
 	"""
 
 	def __init__(self, window, frame, tablename):
@@ -81,12 +85,14 @@ class ContactsManagement:
 			name = entry_name.get()
 			number = entry_phno.get()
 			email = entry_email.get()
+			# Input Validation is done in three stages
 			if helper._verify_contact_name(name) is False:
 				tk.messagebox.showerror(title='Invalid Name', message='Please make sure that you have entered the correct name')
 			elif helper._verify_contact_num(number) is False:
 				tk.messagebox.showerror(title='Invalid Number', message='Please make sure that you have entered the correct number')
 			else:
 				if email == '':
+				# If no email is provided, email is assumed to be null
 					tkinter.messagebox.showinfo(title='Addition Successful', message='Contact Successfully Added')
 					c.execute(f'INSERT INTO {self.tablename} VALUES (?, ?, ?)', (name, number, 'NULL', ))
 					conn.commit()
@@ -122,8 +128,7 @@ class ContactsManagement:
 		# adding button to go back to the previous menu i.e, draw_contacts_menu.
 		btn_go_back = helper.create_button(self.frame, 'Go Back', command=lambda: self.clicked.set(1))
 		btn_go_back.grid(row=3, column=0, sticky='w')
-
-		# adding clicking mechanism
+		# Wait until button is clicked and self.clicked changes
 		btn_submit.wait_variable(self.clicked)
 		self.draw_contacts_menu()
 
@@ -131,6 +136,7 @@ class ContactsManagement:
 		"""Removes all matches from the database, matching based on name (case insensitive)."""
 		def submit():
 			name = entry_name.get()
+			# If at least one matching record present, delete, else raise error
 			if c.execute(f'''SELECT * FROM {self.tablename} WHERE LOWER(name) = ?''', (name.lower(), )).fetchone() is not None:
 				query = c.execute(f'''DELETE FROM {self.tablename}
 							WHERE LOWER(name) = ?''', (name.lower(), ))

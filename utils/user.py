@@ -126,8 +126,7 @@ class UserManagement:
 	def add_user(self):
 		"""Adds a user to the database if all the criterias match successfully."""
 		self._gen_new_frame()
-		self._create_input_credentials()
-	
+		self._create_input_credentials()	
 		if self.status is True:		
 			tablename = helper.scrub('contacts_' + self.username)
 			# Create contacts table for the user
@@ -150,7 +149,6 @@ class UserManagement:
 
 	def _input_credentials(self):
 		"""Inputs and sets user credentials."""
-
 		def submit():
 			self.username = ent_username.get().lower()
 			self.password = ent_password.get()
@@ -175,8 +173,10 @@ class UserManagement:
 		self._input_credentials()
 		if self._user_authorisation() is True:
 			encrypted_credentials = helper.encrypt_credentials(self.username, self.password)
+			# First, delete user from the users table
 			c.execute('DELETE FROM users WHERE username = ? AND password = ?', encrypted_credentials)
 			tablename = helper.scrub('contacts_' + self.username)
+			# Second, delete user's contacts table
 			c.execute(f'DROP TABLE {tablename}')
 			conn.commit()
 			tk.messagebox.showinfo(title='Deletion successful', message='User deleted successfully')
@@ -188,6 +188,7 @@ class UserManagement:
 		"""Selects user upon database verification, and initiates the contact management system."""
 		self._input_credentials()
 		if self._user_authorisation() is True:
+			# Initialize contact management module and transfer control
 			tablename = helper.scrub('contacts_' + self.username)
 			contact = contacts.ContactsManagement(self.window, self.frame, tablename)
 		else:
