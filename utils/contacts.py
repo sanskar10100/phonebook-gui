@@ -67,7 +67,42 @@ class ContactsManagement:
 
 
 	def add_contact(self):
-		pass
+		def submit():
+			name = entry_name.get()
+			number = entry_phno.get()
+			email = entry_email.get()
+			contact_tuple = (name, number, email)
+			tablename = helper.scrub('contacts_' + self.username)
+			c.execute(f'''INSERT INTO {tablename} 
+						VALUES (?, ?, ?);''', contact_tuple)
+			conn.commit()
+			self.clicked.set(1)
+
+		self._gen_new_frame()
+		# adding name, phno and email label.
+		lbl_name = helper.create_label(self.frame, 'Contact Name')
+		lbl_name.grid(row=0, column=0, sticky='w')
+		lbl_phno = helper.create_label(self.frame, 'Contact Number')
+		lbl_phno.grid(row=1, column=0, sticky='w')
+		lbl_email = helper.create_label(self.frame, 'Contact Email')
+		lbl_email.grid(row=2, column=0, sticky='w')
+		
+		# adding entry boxes for name, phno and email labels.
+
+		entry_name = tk.Entry(master=self.master, width=16)
+		entry_name.grid(row=0, column=1, sticky='w')
+		entry_phno = tk.Entry(master=self.master, width=16)
+		entry_phno.grid(row=1, column=1, sticky='w')
+		entry_email = tk.Entry(master=self.master, width=16)
+		entry_email.grid(row=2, column=1, sticky='w')
+
+		# adding button to submit the all the user enter details into the contact_+username table.
+
+		btn_submit = helper.create_button(self.frame, 'Submit', submit)
+		btn_submit.grid(row=3, column=1, sticky='w')
+
+		# adding clicking mechanism
+		btn_submit.wait_variable(self.clicked)
 
 	def remove_contact(self):
 		pass
