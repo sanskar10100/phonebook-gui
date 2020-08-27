@@ -182,7 +182,6 @@ class ContactsManagement:
 		btn_submit.wait_variable(self.clicked)
 		self.draw_contacts_menu()
 			
-
 	def _display_matched_contacts(self, name_key):
 		self._gen_new_frame()
 		self.clicked.set(0)
