@@ -74,13 +74,13 @@ class ContactsManagement:
 			if email == '':
 				email = 'NULL'
 			if (helper._verify_contact_name(name) is False) or (helper._verify_contact_num(number) is False):
-				pass
+				tk.messagebox.showerror(title='Inappropriate Credential', message='Contact name and Contact Number must be valid!')
 			else :
 				contact_tuple = (name, number, email)
 				c.execute(f'''INSERT INTO {self.tablename} 
 							VALUES (?, ?, ?);''', contact_tuple)
 				conn.commit()
-			self.clicked.set(1)
+				self.clicked.set(1)
 
 		self._gen_new_frame()
 		# adding name, phno and email label.
@@ -100,7 +100,7 @@ class ContactsManagement:
 		entry_email = tk.Entry(master=self.frame, width=16)
 		entry_email.grid(row=2, column=1, sticky='w')
 
-		# adding button to submit the all the user enter details into the contact_+username table.
+		# adding button to submit the all the user enter details into the self.tablename table.
 		btn_submit = helper.create_button(self.frame, 'Submit', submit)
 		btn_submit.grid(row=3, column=1, sticky='w')
 		# adding button to go back to the previous menu i.e, draw_contacts_menu.
@@ -112,7 +112,31 @@ class ContactsManagement:
 		self.draw_contacts_menu()
 
 	def remove_contact(self):
-		pass
+		def remove_contact():
+			name = entry_name.get()
+			if c.execute(f'''SELECT * FROM {self.tablename} WHERE LOWER(name) = ?''', (name.lower(), )).fetchone() is not None:
+				query = c.execute(f'''DELETE FROM {self.tablename}
+							WHERE LOWER(name) = ?''', (name.lower(), ))
+				conn.commit()
+				self.clicked.set(1)
+			else:
+				tk.messagebox.showerror(title='Invalid Contact Name', message='Contact Name does not exist')
+		self._gen_new_frame()
+		# taking name to remove the contact from the self.tablename table.
+		lbl_name = helper.create_label(self.frame, 'Contact Name')
+		lbl_name.grid(row=0, column=0, sticky='w')
+		# entry box to take name of the contact to remove.
+		entry_name = tk.Entry(master=self.frame, width=16)
+		entry_name.grid(row=0, column=1, sticky='w')
+		# button to remove the user.
+		btn_remove = helper.create_button(self.frame, 'Delete', remove_contact)
+		btn_remove.grid(row=1, column=1, sticky='w')
+		# adding button to go back to the previous menu i.e, draw_contacts_menu.
+		btn_go_back = helper.create_button(self.frame, 'Go Back', command=lambda: self.clicked.set(1))
+		btn_go_back.grid(row=1, column=0, sticky='w')
+
+		btn_remove.wait_variable(self.clicked)
+		self.draw_contacts_menu()
 
 	def modify_contact(self):
 		pass
