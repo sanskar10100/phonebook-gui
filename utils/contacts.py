@@ -129,7 +129,7 @@ class ContactsManagement:
 
 	def remove_contact(self):
 		"""Removes all matches from the database, matching based on name (case insensitive)."""
-		def remove_contact():
+		def submit():
 			name = entry_name.get()
 			if c.execute(f'''SELECT * FROM {self.tablename} WHERE LOWER(name) = ?''', (name.lower(), )).fetchone() is not None:
 				query = c.execute(f'''DELETE FROM {self.tablename}
@@ -147,7 +147,7 @@ class ContactsManagement:
 		entry_name = tk.Entry(master=self.frame, width=16)
 		entry_name.grid(row=0, column=1, sticky='w')
 		# button to remove the user.
-		btn_remove = helper.create_button(self.frame, 'Delete', remove_contact)
+		btn_remove = helper.create_button(self.frame, 'Delete', submit)
 		btn_remove.grid(row=1, column=1, sticky='w')
 		# adding button to go back to the previous menu i.e, draw_contacts_menu.
 		btn_go_back = helper.create_button(self.frame, 'Go Back', command=lambda: self.clicked.set(1))
