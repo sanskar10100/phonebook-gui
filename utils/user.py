@@ -98,8 +98,11 @@ class UserManagement:
 				self.status = True
 				tk.messagebox.showinfo(title='Addition successful', message='User added successfully')
 			self.clicked.set(1)
+			self.status = True
 
 		self._gen_new_frame()
+		self.clicked.set(0)
+		self.status = False
 		tk.messagebox.showinfo(title='Credential Criteria', message=helper.credential_criteria)
 		# labels of username and password and confirm password.
 		lbl_username = helper.create_label(self.frame, 'Username')
@@ -120,8 +123,10 @@ class UserManagement:
 		# Creating submit button to add the user
 		btn_submit = helper.create_button(self.frame, 'Submit', submit)
 		btn_submit.grid(row=3, column=1, sticky='w')
+		btn_go_back = helper.create_button(self.frame, 'Go Back', command=lambda: self.clicked.set(1))
+		btn_go_back.grid(row=3, column=0, sticky='w')
 		# Wait until submit button is clicked
-		btn_submit.wait_variable(self.clicked)
+		btn_go_back.wait_variable(self.clicked)
 
 	def add_user(self):
 		"""Adds a user to the database if all the criterias match successfully."""
@@ -153,8 +158,11 @@ class UserManagement:
 			self.username = ent_username.get().lower()
 			self.password = ent_password.get()
 			self.clicked.set(1)
+			self.status = True
 
 		self._gen_new_frame()
+		self.clicked.set(0)
+		self.status = False
 		# lable and entry for username
 		lbl_username = helper.create_label(self.frame, 'Username:').grid(row=0, column=0, sticky='w')
 		ent_username = tk.Entry(self.frame)
@@ -164,33 +172,37 @@ class UserManagement:
 		ent_password = tk.Entry(self.frame, show='*')
 		ent_password.grid(row=1, column=1, sticky='w')
 		# Submit button, when clicked registers input		
-		btn_submit = helper.create_button(self.frame, 'Login', submit)
-		btn_submit.grid(row = 4, column = 1, sticky = 'w')
-		btn_submit.wait_variable(self.clicked) # should be the last line of the function
+		btn_submit = helper.create_button(self.frame, 'Submit', submit)
+		btn_submit.grid(row=2, column=1, sticky='w')
+		btn_go_back = helper.create_button(self.frame, 'Go Back', lambda: self.clicked.set(1))
+		btn_go_back.grid(row=2, column=0, sticky='w')
+		btn_go_back.wait_variable(self.clicked) # should be the last line of the function
 
 	def remove_user(self):
 		"""Removes user upon successful database matching."""
 		self._input_credentials()
-		if self._user_authorisation() is True:
-			encrypted_credentials = helper.encrypt_credentials(self.username, self.password)
-			# First, delete user from the users table
-			c.execute('DELETE FROM users WHERE username = ? AND password = ?', encrypted_credentials)
-			tablename = helper.scrub('contacts_' + self.username)
-			# Second, delete user's contacts table
-			c.execute(f'DROP TABLE {tablename}')
-			conn.commit()
-			tk.messagebox.showinfo(title='Deletion successful', message='User deleted successfully')
-		else:
-			tk.messagebox.showerror(title='Failed to delete user', messaege='The user does not exist!')
+		if self.status is True:
+			if self._user_authorisation() is True:
+				encrypted_credentials = helper.encrypt_credentials(self.username, self.password)
+				# First, delete user from the users table
+				c.execute('DELETE FROM users WHERE username = ? AND password = ?', encrypted_credentials)
+				tablename = helper.scrub('contacts_' + self.username)
+				# Second, delete user's contacts table
+				c.execute(f'DROP TABLE {tablename}')
+				conn.commit()
+				tk.messagebox.showinfo(title='Deletion successful', message='User deleted successfully')
+			else:
+				tk.messagebox.showerror(title='Failed to delete user', messaege='The user does not exist!')
 		self.draw_user_menu()
 
 	def select_user(self):
 		"""Selects user upon database verification, and initiates the contact management system."""
 		self._input_credentials()
-		if self._user_authorisation() is True:
-			# Initialize contact management module and transfer control
-			tablename = helper.scrub('contacts_' + self.username)
-			contact = contacts.ContactsManagement(self.window, self.frame, tablename)
-		else:
-			tk.messagebox.showerror(title='Failed to select user', message='The user does not exist!')
+		if self.status is True:
+			if self._user_authorisation() is True:
+				# Initialize contact management module and transfer control
+				tablename = helper.scrub('contacts_' + self.username)
+				contact = contacts.ContactsManagement(self.window, self.frame, tablename)
+			else:
+				tk.messagebox.showerror(title='Failed to select user', message='The user does not exist!')
 		self.draw_user_menu()
