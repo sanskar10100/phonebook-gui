@@ -22,6 +22,7 @@ class ContactsManagement:
 	window: parent or root phonebook window
 	frame: currently active frame or screen
 	clicked: indicates whether a buttton has been clicked. Useful for creating local loops
+	status: returns status and occasionally data from the last method, if needed
 	"""
 
 	def __init__(self, window, frame, tablename):
@@ -30,6 +31,7 @@ class ContactsManagement:
 		self.frame = frame
 		self.clicked = tk.IntVar()
 		self.clicked.set(0)
+		self.status = None
 		self.draw_contacts_menu()
 
 	def _gen_new_frame(self):
@@ -93,14 +95,14 @@ class ContactsManagement:
 			else:
 				if email == '':
 				# If no email is provided, email is assumed to be null
-					tkinter.messagebox.showinfo(title='Addition Successful', message='Contact Successfully Added')
+					tk.messagebox.showinfo(title='Addition Successful', message='Contact Successfully Modified')
 					c.execute(f'INSERT INTO {self.tablename} VALUES (?, ?, ?)', (name, number, 'NULL', ))
 					conn.commit()
 				else:
 					if helper._verify_contact_email(email) is False:
 						tk.messagebox.showerror(title='Invalid Email', message='Please make sure that you have entered the correct email')				
 					else:
-						tkinter.messagebox.showinfo(title='Addition Successful', message='Contact Successfully Added')
+						tk.messagebox.showinfo(title='Addition Successful', message='Contact Successfully Modified')
 						c.execute(f'INSERT INTO {self.tablename} VALUES (?, ?, ?)', (name, number, email, ))
 						conn.commit()
 			self.clicked.set(1)
@@ -163,7 +165,91 @@ class ContactsManagement:
 		self.draw_contacts_menu()
 
 	def modify_contact(self):
-		pass
+		"""Modifies all the occurences of an existing contact based on the contact name."""
+		def submit():
+			name = ent_name.get()
+			number = ent_number.get()
+			email = ent_email.get()
+			if helper._verify_contact_name(name) is False:
+				tk.messagebox.showerror(title='Invalid Name', message='Please make sure that you have entered the correct name')
+			elif helper._verify_contact_num(number) is False:
+				tk.messagebox.showerror(title='Invalid Number', message='Please make sure that you have entered the correct number')
+			else:
+				if email == '':
+				# If no email is provided, email is assumed to be null
+					tk.messagebox.showinfo(title='Modification Successful', message='Contact Successfully Modified')
+					c.execute(f'''UPDATE {self.tablename}
+									SET name = ?,
+										number = ?,
+										email = ?
+									WHERE LOWER(name) = ?''', (name, number, 'NULL', name_key, ))
+					conn.commit()
+				else:
+					if helper._verify_contact_email(email) is False:
+						tk.messagebox.showerror(title='Invalid Email', message='Please make sure that you have entered the correct email')				
+					else:
+						tk.messagebox.showinfo(title='Modification Successful', message='Contact Successfully Modified')
+						c.execute(f'''UPDATE {self.tablename}
+										SET name = ?,
+											number = ?,
+											email = ?
+										WHERE LOWER(name) = ?''', (name, number, email, name_key, ))
+						conn.commit()
+			self.clicked.set(1)
+
+		self._get_contact_name()
+		self.clicked.set(0)
+		if self.status[0] is True:
+			name_key = self.status[1]
+			self._gen_new_frame()
+			name = c.execute(f'SELECT name FROM {self.tablename} WHERE LOWER(name) = ?',  (name_key, )).fetchone()[0]
+			number = c.execute(f'SELECT number FROM {self.tablename} WHERE LOWER(name) = ?', (name_key, )).fetchone()[0]
+			email = c.execute(f'SELECT email FROM {self.tablename} WHERE LOWER(name) = ?', (name_key, )).fetchone()[0]
+			# From Tenet: Don't try to understand it; Feel it!
+			formatted = lambda email: '' if email is None else email
+			helper.create_label(self.frame, 'Name:').grid(row=0, column=0)
+			helper.create_label(self.frame, 'Number:').grid(row=1, column=0)
+			helper.create_label(self.frame, 'Email:').grid(row=2, column=0)
+			ent_name = tk.Entry(self.frame)
+			ent_name.insert(0, name)
+			ent_name.grid(row=0, column=1)
+			ent_number = tk.Entry(self.frame)
+			ent_number.insert(0, number)
+			ent_number.grid(row=1, column=1)
+			ent_email = tk.Entry(self.frame)
+			ent_email.insert(0, formatted(email))
+			ent_email.grid(row=2, column=1)
+			btn_submit = helper.create_button(self.frame, text='Submit', command=submit)
+			btn_submit.grid(row=3, column=1)
+			btn_go_back = helper.create_button(self.frame, text='Go Back', command=lambda: self.clicked.set(1))
+			btn_go_back.grid(row=3, column=0)
+			btn_go_back.wait_variable(self.clicked)
+		self.draw_contacts_menu()	
+
+	def _get_contact_name(self):
+		"""Used by modify_contact to get a contact name that matches at least one field."""
+		def submit():
+			contact_name = ent_contact_name.get().lower()
+			if c.execute(f'SELECT * FROM {self.tablename} WHERE LOWER(name) = ?', (contact_name, )).fetchone() is None:
+				tk.messagebox.showerror(title='No matches', message='Could not find any contacts matching the name')
+				self.status = (False, 0, )
+			else:
+				self.status = (True, contact_name, )
+			self.clicked.set(1)
+
+		def go_back():
+			self.clicked.set(1)
+			self.status = (False, 0, )
+
+		self._gen_new_frame()
+		self.clicked.set(0)
+		helper.create_label(master=self.frame, text='Contact Name to modify:').grid(row=0, column=0)
+		ent_contact_name = tk.Entry(master=self.frame)
+		ent_contact_name.grid(row=0, column=1)
+		helper.create_button(self.frame, text='Submit', command=submit).grid(row=1, column=1)
+		btn_go_back = helper.create_button(master=self.frame, text='Go Back', command=go_back)
+		btn_go_back.grid(row=1, column=0)
+		btn_go_back.wait_variable(self.clicked)
 
 	def search_contact(self):
 		"""Matches contacts based on name (case insensitive) and prints all matching results."""

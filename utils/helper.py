@@ -19,9 +19,9 @@ def create_button(master=None, text=None, command=None):
 	return tk.Button(master=master, text=text, fg='#FFFFFF', bg='#009688', command=command)
 
 
-def create_label(frame, label_text):
+def create_label(master=None, text=None):
 	"""Returns a newly created label according to the style guidlines."""
-	return tk.Label(master=frame, text=label_text, fg='#212121', bg='#CFD8DC')
+	return tk.Label(master=master, text=text, fg='#212121', bg='#CFD8DC')
 
 
 def encrypt_credentials(username, password):
