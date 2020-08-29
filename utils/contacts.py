@@ -120,11 +120,11 @@ class ContactsManagement:
 		lbl_email.grid(row=2, column=0, sticky='w')
 		
 		# adding entry boxes for name, phno and email labels.
-		entry_name = tk.Entry(master=self.frame, width=16)
+		entry_name = helper.create_entry(master=self.frame, width=16)
 		entry_name.grid(row=0, column=1, sticky='w')
-		entry_phno = tk.Entry(master=self.frame, width=16)
+		entry_phno = helper.create_entry(master=self.frame, width=16)
 		entry_phno.grid(row=1, column=1, sticky='w')
-		entry_email = tk.Entry(master=self.frame, width=16)
+		entry_email = helper.create_entry(master=self.frame, width=16)
 		entry_email.grid(row=2, column=1, sticky='w')
 
 		# adding button to submit the all the user enter details into the self.tablename table.
@@ -156,7 +156,7 @@ class ContactsManagement:
 		lbl_name = helper.create_label(self.frame, 'Contact Name')
 		lbl_name.grid(row=0, column=0, sticky='w')
 		# entry box to take name of the contact to remove.
-		entry_name = tk.Entry(master=self.frame, width=16)
+		entry_name = helper.create_entry(master=self.frame, width=16)
 		entry_name.grid(row=0, column=1, sticky='w')
 		# button to remove the user.
 		btn_remove = helper.create_button(self.frame, 'Delete', submit)
@@ -215,13 +215,13 @@ class ContactsManagement:
 			helper.create_label(self.frame, 'Name:').grid(row=0, column=0)
 			helper.create_label(self.frame, 'Number:').grid(row=1, column=0)
 			helper.create_label(self.frame, 'Email:').grid(row=2, column=0)
-			ent_name = tk.Entry(self.frame)
+			ent_name = helper.create_entry(self.frame)
 			ent_name.insert(0, name)
 			ent_name.grid(row=0, column=1)
-			ent_number = tk.Entry(self.frame)
+			ent_number = helper.create_entry(self.frame)
 			ent_number.insert(0, number)
 			ent_number.grid(row=1, column=1)
-			ent_email = tk.Entry(self.frame)
+			ent_email = helper.create_entry(self.frame)
 			ent_email.insert(0, formatted(email))
 			ent_email.grid(row=2, column=1)
 			btn_submit = helper.create_button(self.frame, text='Submit', command=submit)
@@ -249,7 +249,7 @@ class ContactsManagement:
 		self._gen_new_frame()
 		self.clicked.set(0)
 		helper.create_label(master=self.frame, text='Contact Name to modify:').grid(row=0, column=0)
-		ent_contact_name = tk.Entry(master=self.frame)
+		ent_contact_name = helper.create_entry(master=self.frame)
 		ent_contact_name.grid(row=0, column=1)
 		helper.create_button(self.frame, text='Submit', command=submit).grid(row=1, column=1)
 		btn_go_back = helper.create_button(master=self.frame, text='Go Back', command=go_back)
@@ -270,7 +270,7 @@ class ContactsManagement:
 		self._gen_new_frame()
 		self.clicked.set(0)
 		helper.create_label(self.frame, 'Name to be searched: ').grid(row=0, column=0)
-		ent_name_key = tk.Entry(master=self.frame)
+		ent_name_key = helper.create_entry(master=self.frame)
 		ent_name_key.grid(row=0, column=1)
 		btn_go_back = helper.create_button(self.frame, 'Go Back', command=lambda: self.clicked.set(1))
 		btn_go_back.grid(row=1, column=0, sticky='w')

@@ -24,6 +24,11 @@ def create_label(master=None, text=None):
 	return tk.Label(master=master, text=text, fg='#212121', bg='#CFD8DC')
 
 
+def create_entry(master=None, width=16, show=None):
+	"""Returns a newly created entry according to the style guide."""
+	return tk.Entry(master=master, width=width, show=show)
+
+
 def encrypt_credentials(username, password):
 	"""Return the login credential in sha256 encrypted format."""
 	encrypt_login_details = list()

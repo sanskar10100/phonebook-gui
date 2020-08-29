@@ -113,11 +113,11 @@ class UserManagement:
 		lbl_confirm_password.grid(row=2, column=0, sticky='w')
 
 		# creating entry boxes for above labels.
-		entry_username = tk.Entry(master=self.frame, width=16)
+		entry_username = helper.create_entry(master=self.frame, width=16)
 		entry_username.grid(row=0, column=1, sticky='w')
-		entry_password = tk.Entry(master=self.frame, width = 16, show='*')
+		entry_password = helper.create_entry(master=self.frame, width = 16, show='*')
 		entry_password.grid(row=1, column=1, sticky='w')
-		entry_confirm_password = tk.Entry(master=self.frame, width = 16, show='*')
+		entry_confirm_password = helper.create_entry(master=self.frame, width = 16, show='*')
 		entry_confirm_password.grid(row=2, column=1, sticky='w')
 
 		# Creating submit button to add the user
@@ -165,11 +165,11 @@ class UserManagement:
 		self.status = False
 		# lable and entry for username
 		lbl_username = helper.create_label(self.frame, 'Username:').grid(row=0, column=0, sticky='w')
-		ent_username = tk.Entry(self.frame)
+		ent_username = helper.create_entry(self.frame)
 		ent_username.grid(row=0, column=1, sticky='w')
 		# lable and entry for password
 		lbl_password = helper.create_label(self.frame, 'Password:').grid(row=1, column=0, sticky='w')
-		ent_password = tk.Entry(self.frame, show='*')
+		ent_password = helper.create_entry(self.frame, show='*')
 		ent_password.grid(row=1, column=1, sticky='w')
 		# Submit button, when clicked registers input		
 		btn_submit = helper.create_button(self.frame, 'Submit', submit)
