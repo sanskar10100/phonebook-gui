@@ -48,6 +48,7 @@ class ContactsManagement:
 			self.frame.destroy()
 			self.clicked.set(1)
 
+		self.window.title('Contacts Management')
 		self._gen_new_frame()
 		self.clicked.set(0)
 		helper.create_button(self.frame, text='Show All Contacts', command=self.show_all_contacts).grid()
@@ -62,6 +63,7 @@ class ContactsManagement:
 	def show_all_contacts(self):
 		"""Shows all contacts for a user, along with the contact count."""
 		# The 0th entry in the tuple returned by fetchone contains the count
+		self.window.title('Show All Contacts')
 		self._gen_new_frame()
 		contact_count = c.execute(f'SELECT COUNT(*) FROM {self.tablename}').fetchone()[0]
 		# First print the contact count
@@ -107,6 +109,7 @@ class ContactsManagement:
 						conn.commit()
 			self.clicked.set(1)
 
+		self.window.title('Add Contacts')
 		self._gen_new_frame()
 		# adding name, phno and email label.
 		lbl_name = helper.create_label(self.frame, 'Contact Name')
@@ -146,7 +149,8 @@ class ContactsManagement:
 				self.clicked.set(1)
 			else:
 				tk.messagebox.showerror(title='No matches found', message='Contact Name does not exist')
-				
+		
+		self.window.title('Remove Contacts')
 		self._gen_new_frame()
 		# taking name to remove the contact from the self.tablename table.
 		lbl_name = helper.create_label(self.frame, 'Contact Name')
@@ -197,6 +201,7 @@ class ContactsManagement:
 						conn.commit()
 			self.clicked.set(1)
 
+		self.window.title('Modify Contacts')
 		self._get_contact_name()
 		self.clicked.set(0)
 		if self.status[0] is True:
@@ -261,6 +266,7 @@ class ContactsManagement:
 			else:
 				self._display_matched_contacts(name_key)
 
+		self.window.title('Search Contacts')
 		self._gen_new_frame()
 		self.clicked.set(0)
 		helper.create_label(self.frame, 'Name to be searched: ').grid(row=0, column=0)
@@ -275,6 +281,7 @@ class ContactsManagement:
 		self.draw_contacts_menu()
 			
 	def _display_matched_contacts(self, name_key):
+		"""Displays all matched contacts for a particular name key."""
 		self._gen_new_frame()
 		self.clicked.set(0)
 		# Print details for every matching contact name

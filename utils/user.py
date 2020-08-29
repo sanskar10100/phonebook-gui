@@ -45,6 +45,7 @@ class UserManagement:
 
 	def draw_user_menu(self):
 		"""Draws User Management menu with 3 options on the screen."""
+		self.window.title('User Management')
 		self._gen_new_frame()
 		btn_add_user = helper.create_button(self.frame, 'Add User', self.add_user)
 		btn_add_user.grid(sticky='w')
@@ -98,7 +99,6 @@ class UserManagement:
 				self.status = True
 				tk.messagebox.showinfo(title='Addition successful', message='User added successfully')
 			self.clicked.set(1)
-			self.status = True
 
 		self._gen_new_frame()
 		self.clicked.set(0)
@@ -130,7 +130,7 @@ class UserManagement:
 
 	def add_user(self):
 		"""Adds a user to the database if all the criterias match successfully."""
-		self._gen_new_frame()
+		self.window.title('Add User')
 		self._create_input_credentials()	
 		if self.status is True:		
 			tablename = helper.scrub('contacts_' + self.username)
@@ -180,6 +180,7 @@ class UserManagement:
 
 	def remove_user(self):
 		"""Removes user upon successful database matching."""
+		self.window.title('Remove User')
 		self._input_credentials()
 		if self.status is True:
 			if self._user_authorisation() is True:
@@ -197,6 +198,7 @@ class UserManagement:
 
 	def select_user(self):
 		"""Selects user upon database verification, and initiates the contact management system."""
+		self.window.title('Select User')
 		self._input_credentials()
 		if self.status is True:
 			if self._user_authorisation() is True:
