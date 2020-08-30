@@ -14,9 +14,15 @@ At least one digit [0-9]
 At least one special character [@, #, $, &, +, -, *, ?, ., :, /, ;]'''
 
 
-def create_button(master=None, text=None, command=None):
+def create_button(master=None, text=None, command=None, width=20):
 	"""Returns a new button created according to the style guidelines."""
-	return tk.Button(master=master, text=text, fg='#FFFFFF', bg='#009688', command=command, relief=tk.GROOVE)
+	return tk.Button(master=master, text=text, fg='#FFFFFF', bg='#009688', command=command, relief=tk.GROOVE, 
+						width=width, padx=5, pady=5)
+
+
+def grid_button(button, row=None, column=None, sticky=None):
+	"""Grids button based on preset parameters."""
+	button.grid(row=row, column=column, padx=5, pady=5, sticky=sticky)
 
 
 def create_label(master=None, text=None):

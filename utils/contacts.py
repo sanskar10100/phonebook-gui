@@ -51,13 +51,18 @@ class ContactsManagement:
 		self.window.title('Contacts Management')
 		self._gen_new_frame()
 		self.clicked.set(0)
-		helper.create_button(self.frame, text='Show All Contacts', command=self.show_all_contacts).grid()
-		helper.create_button(self.frame, text='Add Contact', command=self.add_contact).grid()
-		helper.create_button(self.frame, text='Remove Contact', command=self.remove_contact).grid()
-		helper.create_button(self.frame, text='Modify Contact', command=self.modify_contact).grid()
-		helper.create_button(self.frame, text='Search Contact', command=self.search_contact).grid()
-		btn_user = helper.create_button(self.frame, text='Switch to User Management Menu', command=return_to_user)
-		btn_user.grid()
+		btn_1 = helper.create_button(self.frame, text='Show All Contacts', command=self.show_all_contacts)
+		helper.grid_button(btn_1)
+		btn_2 = helper.create_button(self.frame, text='Add Contact', command=self.add_contact)
+		helper.grid_button(btn_2)
+		btn_3 = helper.create_button(self.frame, text='Remove Contact', command=self.remove_contact)
+		helper.grid_button(btn_3)
+		btn_4 = helper.create_button(self.frame, text='Modify Contact', command=self.modify_contact)
+		helper.grid_button(btn_4)
+		btn_5 = helper.create_button(self.frame, text='Search Contact', command=self.search_contact)
+		helper.grid_button(btn_5)
+		btn_user = helper.create_button(self.frame, text='Switch to User Management Menu', command=return_to_user, width=30)
+		helper.grid_button(btn_user)
 		btn_user.wait_variable(self.clicked)
 
 	def show_all_contacts(self):
@@ -78,7 +83,7 @@ class ContactsManagement:
 		else:
 			# Go back when button pressed
 			btn_go_back = helper.create_button(self.frame, 'Go Back', command=lambda: self.clicked.set(1))
-			btn_go_back.grid(column=0, sticky='w')
+			helper.grid_button(btn_go_back, column=0, sticky='w')
 			btn_go_back.wait_variable(self.clicked)
 			self.draw_contacts_menu()
 
@@ -129,10 +134,10 @@ class ContactsManagement:
 
 		# adding button to submit the all the user enter details into the self.tablename table.
 		btn_submit = helper.create_button(self.frame, 'Submit', submit)
-		btn_submit.grid(row=3, column=1, sticky='w')
+		helper.grid_button(btn_submit, row=3, column=1)
 		# adding button to go back to the previous menu i.e, draw_contacts_menu.
 		btn_go_back = helper.create_button(self.frame, 'Go Back', command=lambda: self.clicked.set(1))
-		btn_go_back.grid(row=3, column=0, sticky='w')
+		helper.grid_button(btn_go_back, row=3, column=0)
 		# Wait until button is clicked and self.clicked changes
 		btn_submit.wait_variable(self.clicked)
 		self.draw_contacts_menu()
@@ -160,10 +165,10 @@ class ContactsManagement:
 		entry_name.grid(row=0, column=1, sticky='w')
 		# button to remove the user.
 		btn_remove = helper.create_button(self.frame, 'Delete', submit)
-		btn_remove.grid(row=1, column=1, sticky='w')
+		helper.grid_button(btn_remove, row=1, column=1)
 		# adding button to go back to the previous menu i.e, draw_contacts_menu.
 		btn_go_back = helper.create_button(self.frame, 'Go Back', command=lambda: self.clicked.set(1))
-		btn_go_back.grid(row=1, column=0, sticky='w')
+		helper.grid_button(btn_go_back, row=1, column=0)
 
 		btn_remove.wait_variable(self.clicked)
 		self.draw_contacts_menu()
@@ -225,9 +230,9 @@ class ContactsManagement:
 			ent_email.insert(0, formatted(email))
 			ent_email.grid(row=2, column=1)
 			btn_submit = helper.create_button(self.frame, text='Submit', command=submit)
-			btn_submit.grid(row=3, column=1)
+			helper.grid_button(btn_submit, row=3, column=1)
 			btn_go_back = helper.create_button(self.frame, text='Go Back', command=lambda: self.clicked.set(1))
-			btn_go_back.grid(row=3, column=0)
+			helper.grid_button(btn_go_back, row=3, column=0)
 			btn_go_back.wait_variable(self.clicked)
 		self.draw_contacts_menu()	
 
@@ -251,9 +256,10 @@ class ContactsManagement:
 		helper.create_label(master=self.frame, text='Contact Name to modify:').grid(row=0, column=0)
 		ent_contact_name = helper.create_entry(master=self.frame)
 		ent_contact_name.grid(row=0, column=1)
-		helper.create_button(self.frame, text='Submit', command=submit).grid(row=1, column=1)
+		btn_submit = helper.create_button(self.frame, text='Submit', command=submit)
+		helper.grid_button(btn_submit, row=1, column=1)
 		btn_go_back = helper.create_button(master=self.frame, text='Go Back', command=go_back)
-		btn_go_back.grid(row=1, column=0)
+		helper.grid_button(btn_go_back, row=1, column=0)
 		btn_go_back.wait_variable(self.clicked)
 
 	def search_contact(self):
@@ -273,9 +279,9 @@ class ContactsManagement:
 		ent_name_key = helper.create_entry(master=self.frame)
 		ent_name_key.grid(row=0, column=1)
 		btn_go_back = helper.create_button(self.frame, 'Go Back', command=lambda: self.clicked.set(1))
-		btn_go_back.grid(row=1, column=0, sticky='w')
+		helper.grid_button(btn_go_back, row=1, column=0)
 		btn_submit = helper.create_button(self.frame, text='Submit', command=submit)
-		btn_submit.grid(row=1, column=1)
+		helper.grid_button(btn_submit, row=1, column=1)
 		# wait until the submit button is clicked to perform match
 		btn_submit.wait_variable(self.clicked)
 		self.draw_contacts_menu()
@@ -292,5 +298,5 @@ class ContactsManagement:
 		else:
 			# Go back when button pressed
 			btn_go_back = helper.create_button(self.frame, 'Go Back', command=lambda: self.clicked.set(1))
-			btn_go_back.grid(column=0, sticky='w')
+			helper.grid_button(btn_go_back, column=0, sticky='w')
 			btn_go_back.wait_variable(self.clicked)

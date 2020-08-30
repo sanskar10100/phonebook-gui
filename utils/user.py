@@ -48,11 +48,11 @@ class UserManagement:
 		self.window.title('User Management')
 		self._gen_new_frame()
 		btn_add_user = helper.create_button(self.frame, 'Add User', self.add_user)
-		btn_add_user.grid(sticky='w')
+		helper.grid_button(btn_add_user)
 		btn_remove_user = helper.create_button(self.frame, 'Remove User', self.remove_user)
-		btn_remove_user.grid(sticky='w')
+		helper.grid_button(btn_remove_user)
 		btn_select_user = helper.create_button(self.frame, 'Select User', self.select_user)
-		btn_select_user.grid(sticky='w')
+		helper.grid_button(btn_select_user)
 
 	def _user_authorisation(self):
 		"""Returns true if user credentials exist in the users table."""
@@ -122,9 +122,9 @@ class UserManagement:
 
 		# Creating submit button to add the user
 		btn_submit = helper.create_button(self.frame, 'Submit', submit)
-		btn_submit.grid(row=3, column=1, sticky='w')
+		helper.grid_button(btn_submit, row=3, column=1)
 		btn_go_back = helper.create_button(self.frame, 'Go Back', command=lambda: self.clicked.set(1))
-		btn_go_back.grid(row=3, column=0, sticky='w')
+		helper.grid_button(btn_go_back, row=3, column=0)
 		# Wait until submit button is clicked
 		btn_go_back.wait_variable(self.clicked)
 
@@ -173,9 +173,9 @@ class UserManagement:
 		ent_password.grid(row=1, column=1, sticky='w')
 		# Submit button, when clicked registers input		
 		btn_submit = helper.create_button(self.frame, 'Submit', submit)
-		btn_submit.grid(row=2, column=1, sticky='w')
+		helper.grid_button(btn_submit, row=2, column=1)
 		btn_go_back = helper.create_button(self.frame, 'Go Back', lambda: self.clicked.set(1))
-		btn_go_back.grid(row=2, column=0, sticky='w')
+		helper.grid_button(btn_go_back, row=2, column=0)
 		btn_go_back.wait_variable(self.clicked) # should be the last line of the function
 
 	def remove_user(self):
