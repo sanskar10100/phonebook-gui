@@ -48,11 +48,11 @@ class UserManagement:
 		self.window.title('User Management')
 		self._gen_new_frame()
 		btn_add_user = helper.create_button(self.frame, 'Add User', self.add_user)
-		btn_add_user.grid(sticky='w')
+		helper.grid_button(btn_add_user)
 		btn_remove_user = helper.create_button(self.frame, 'Remove User', self.remove_user)
-		btn_remove_user.grid(sticky='w')
+		helper.grid_button(btn_remove_user)
 		btn_select_user = helper.create_button(self.frame, 'Select User', self.select_user)
-		btn_select_user.grid(sticky='w')
+		helper.grid_button(btn_select_user)
 
 	def _user_authorisation(self):
 		"""Returns true if user credentials exist in the users table."""
@@ -113,18 +113,18 @@ class UserManagement:
 		lbl_confirm_password.grid(row=2, column=0, sticky='w')
 
 		# creating entry boxes for above labels.
-		entry_username = tk.Entry(master=self.frame, width=16)
+		entry_username = helper.create_entry(master=self.frame, width=16)
 		entry_username.grid(row=0, column=1, sticky='w')
-		entry_password = tk.Entry(master=self.frame, width = 16, show='*')
+		entry_password = helper.create_entry(master=self.frame, width = 16, show='*')
 		entry_password.grid(row=1, column=1, sticky='w')
-		entry_confirm_password = tk.Entry(master=self.frame, width = 16, show='*')
+		entry_confirm_password = helper.create_entry(master=self.frame, width = 16, show='*')
 		entry_confirm_password.grid(row=2, column=1, sticky='w')
 
 		# Creating submit button to add the user
 		btn_submit = helper.create_button(self.frame, 'Submit', submit)
-		btn_submit.grid(row=3, column=1, sticky='w')
+		helper.grid_button(btn_submit, row=3, column=1)
 		btn_go_back = helper.create_button(self.frame, 'Go Back', command=lambda: self.clicked.set(1))
-		btn_go_back.grid(row=3, column=0, sticky='w')
+		helper.grid_button(btn_go_back, row=3, column=0)
 		# Wait until submit button is clicked
 		btn_go_back.wait_variable(self.clicked)
 
@@ -165,17 +165,17 @@ class UserManagement:
 		self.status = False
 		# lable and entry for username
 		lbl_username = helper.create_label(self.frame, 'Username:').grid(row=0, column=0, sticky='w')
-		ent_username = tk.Entry(self.frame)
+		ent_username = helper.create_entry(self.frame)
 		ent_username.grid(row=0, column=1, sticky='w')
 		# lable and entry for password
 		lbl_password = helper.create_label(self.frame, 'Password:').grid(row=1, column=0, sticky='w')
-		ent_password = tk.Entry(self.frame, show='*')
+		ent_password = helper.create_entry(self.frame, show='*')
 		ent_password.grid(row=1, column=1, sticky='w')
 		# Submit button, when clicked registers input		
 		btn_submit = helper.create_button(self.frame, 'Submit', submit)
-		btn_submit.grid(row=2, column=1, sticky='w')
+		helper.grid_button(btn_submit, row=2, column=1)
 		btn_go_back = helper.create_button(self.frame, 'Go Back', lambda: self.clicked.set(1))
-		btn_go_back.grid(row=2, column=0, sticky='w')
+		helper.grid_button(btn_go_back, row=2, column=0)
 		btn_go_back.wait_variable(self.clicked) # should be the last line of the function
 
 	def remove_user(self):
