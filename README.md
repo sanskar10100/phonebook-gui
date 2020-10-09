@@ -39,3 +39,7 @@ Portable and fast python GUI application that provides contact management capabi
 ---
 
 [Raise an issue](https://github.com/aritificialphysics/phonebook-gui/issues/new)
+
+---
+
+## Active Development and Support ceased.
